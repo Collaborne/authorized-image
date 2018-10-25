@@ -1,0 +1,126 @@
+<!doctype html>
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="authorized-fetch-mixin.html">
+
+<dom-module id="authorized-image">
+	<template>
+		<style>
+		/* Fit this component into the the parent */
+		:host {
+			display: inline-block;
+			overflow: hidden;
+			position: relative;
+		}
+
+		/* Fit the image into this space */
+		iron-image {
+			width: 100%;
+			height: 100%;
+		}
+		</style>
+		<iron-image
+			id="image"
+
+			alt="{{alt}}"
+			crossorigin="{{crossorigin}}"
+			error="{{error}}"
+			fade="{{fade}}"
+			height="{{height}}"
+			loaded="{{loaded}}"
+			loading="{{loading}}"
+			placeholder="{{_computePlaceholder(src, placeholder)}}"
+			position="{{position}}"
+			preload="{{preload}}"
+			prevent-load="{{_computePreventLoad(preventLoad, _displayed)}}"
+			sizing="{{sizing}}"
+			src="{{_computeSrc(src, _displayed, token)}}"
+			width="{{width}}"
+		></iron-image>
+	</template>
+
+	<script>
+		/**
+		 * Image that uses the file-token to authenticate requests to images
+		 *
+		 * @customElement
+		 * @polymer
+		 */
+		class AuthorizedImage extends
+			Collaborne.AuthorizedFetchMixin(
+			Polymer.Element) {
+
+			static get is() {
+				return 'authorized-image';
+			}
+
+			static get properties() {
+				return {
+					_displayed: Object,
+
+					alt: String,
+					crossorigin: String,
+					error: {
+						notify: true,
+						readOnly: true,
+						type: Boolean,
+					},
+					fade: Boolean,
+					height: Number,
+					loaded: {
+						notify: true,
+						readOnly: true,
+						type: Boolean,
+					},
+					loading: {
+						notify: true,
+						readOnly: true,
+						type: Boolean,
+					},
+					placeholder: String,
+					position: String,
+					preload: Boolean,
+					preventLoad: Boolean,
+					sizing: String,
+					src: String,
+					width: Number,
+
+					token: String,
+				};
+			}
+
+			_computeSrc(src, displayed, token) {
+				// Use the existing data if we already have some.
+				// Note that when there was an error fetching the data because the token was missing,
+				// this would prevent a reload, so explicitly check for that.
+				if (displayed) {
+					const forceReload = displayed.dataUrl === '' && token;
+					if (!forceReload && src === displayed.src) {
+						return displayed.dataUrl;
+					}
+				}
+
+				if (src) {
+					// Starting fetching content
+					this.fetchDataUrl(src, token).then(result => this._displayed = result);
+				}
+
+				// Return '', which iron-image treats as "nothing to do"
+				return '';
+			}
+
+			_computePreventLoad(preventLoad, displayed) {
+				// Prevent loading when either the user requested that, or when we cannot actually display things.
+				return preventLoad || (displayed && displayed.dataUrl === '');
+			}
+
+			_computePlaceholder(src, placeholder) {
+				// Only use the placeholder when we do not have a src at all
+				if (!src) {
+					return placeholder;
+				}
+			}
+		}
+		window.customElements.define(AuthorizedImage.is, AuthorizedImage);
+	</script>
+</dom-module>

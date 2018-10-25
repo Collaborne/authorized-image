@@ -1,0 +1,42 @@
+<!doctype html>
+<script>
+	var Collaborne = Collaborne || {};
+	
+	/**
+	 * Mixin that allows fetching with authorization through the browser cache and providing the result through a data: URL.
+	 */
+	Collaborne.AuthorizedFetchMixin = parent => class extends parent {
+		/**
+		 * Fetch the given `src` by authorizing with the given bearer token `token`.
+		 *
+		 * @param {string} src the source URL to fetch
+		 * @param {string} [token] the token to use as bearer token
+		 * @return {Promise<{dataUrl: string, src: string}>} a promise that resolves to an object providing the data: URL
+		 */
+		fetchDataUrl(src, token) {
+			if (!src) {
+				return Promise.reject(new Error('No src to fetch given'));
+			}
+			const headers = new Headers();
+			if (token) {
+				headers.set('authorization', `Bearer ${token}`);
+			}
+			return fetch(src, {headers})
+				.then(response => response.blob())
+				.then(blob => {
+					return new Promise(resolve => {
+						const fileReader = new FileReader();
+						fileReader.onload = e => {
+							resolve({dataUrl: e.target.result, src});
+						};
+
+						fileReader.readAsDataURL(blob);
+					});
+				})
+				.catch(e => {
+					console.error(`Cannot fetch ${src}: ${e.message}`);
+					return {dataUrl: '', src};
+				});
+		}
+	}
+</script>
