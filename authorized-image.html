@@ -100,13 +100,22 @@
 					}
 				}
 
+				// Return '', which iron-image treats as "nothing to do"
+				let result = '';
+
 				if (src) {
-					// Starting fetching content
-					this.fetchDataUrl(src, token).then(result => this._displayed = result);
+					const srcUrl = new URL(src);
+					if (srcUrl.protocol === 'data:') {
+						// Data URL, we can use that directly.
+						this._displayed = this.displayed(src, src);
+						result = src;
+					} else {
+						// Starting fetching content
+						this.fetchDataUrl(src, token).then(result => this._displayed = result);
+					}
 				}
 
-				// Return '', which iron-image treats as "nothing to do"
-				return '';
+				return result;
 			}
 
 			_computePreventLoad(preventLoad, displayed) {
