@@ -105,7 +105,8 @@
 				let result = '';
 
 				if (src) {
-					const srcUrl = new URL(src);
+					// Set base to support relative URLs
+					const srcUrl = new URL(src, window.location);
 					if (srcUrl.protocol === 'data:') {
 						// Data URL, we can use that directly.
 						this._displayed = this.displayed(src, src);
