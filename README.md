@@ -13,6 +13,15 @@ _Note:_ The component depends on a working `URL` constructor. For supporting IE1
 bower install --save webcomponents/URL
 ```
 
+## Restrictions, Known Issues, and Differences to `<img>`/`<iron-image>`
+
+This component can solve problems related to caching images that require authorization, but at the same time can also introduce a lot of potential problems:
+
+* The `<authorized-image>` component will fetch the images when then `src` is known and the component is likely visible based on an [IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API).
+* The `<authorized-image>` component will fetch images once per component instance, even when the URL is equal to other instances on the same page.
+* When using a token the `<authorized-image>` component will do a CORS pre-flight request to the `authorization` HTTP header in the request.
+* Images fetched via the `<authorized-image>` component must comply to the `connect-src` Content-Security-Policy directive rather than the `img-src` directive.
+
 ## License
 
     This software is licensed under the Apache 2 license, quoted below.
