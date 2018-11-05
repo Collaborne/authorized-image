@@ -35,7 +35,7 @@
 			preload="{{preload}}"
 			prevent-load="[[_computePreventLoad(preventLoad, _displayed)]]"
 			sizing="{{sizing}}"
-			src="[[_computeSrc(src, _displayed, token)]]"
+			src="[[_computeSrc(src, _wasVisible, _displayed, token)]]"
 			width="{{width}}"
 		></iron-image>
 	</template>
@@ -59,6 +59,19 @@
 				return {
 					_displayed: Object,
 					_ironImageError: Boolean,
+					/**
+					 * Whether this image was ever visible.
+					 * This property is used to delay the internal "fetch" request for invisible images, but avoid
+					 * extra _computeSrc calls when this image is hidden after it was visible once.
+					 */
+					_wasVisible: {
+						computed: '_computeWasVisible(_wasVisible, _supportsIntersectionObserver, _visible)'
+					},
+					_supportsIntersectionObserver: {
+						value: typeof IntersectionObserver === 'function',
+						readOnly: true,
+						type: Boolean,
+					},
 
 					alt: String,
 					crossorigin: String,
@@ -97,11 +110,44 @@
 				};
 			}
 
+			ready() {
+				super.ready();
+
+				// Register an "intersection observer" to learn when this element is actually becoming
+				// visible.
+				// If the browser doesn't support this functionality we rely on the default value.
+				// Observe mutations to the parent element that affect us
+				if (this._supportsIntersectionObserver) {
+					this._observer = new IntersectionObserver(entries => {
+						// See https://stackoverflow.com/a/38873788/196315
+						// XXX: Can we instead look at the entries, specifically 'isIntersecting'?
+						this._visible = !!(this.offsetHeight || this.offsetWidth || this.getClientRects().length > 0);
+					});
+					this._observer.observe(this);
+				}
+			}
+
+			_computeWasVisible(wasVisible, supportsIntersectionObserver, visible) {
+				// If the element was visible before do no longer change.
+				if (wasVisible) {
+					return wasVisible;
+				}
+
+				// If the browser does not support intersection observers assume the element is
+				// visible.
+				if (!supportsIntersectionObserver) {
+					return true;
+				}
+
+				// Otherwise: Check the property that will be set by the intersection observer.
+				return visible;
+			}
+
 			_computeError(ironImageError, displayed) {
 				return Boolean(ironImageError || displayed && displayed.dataUrl === '');
 			}
 
-			_computeSrc(src, displayed, token) {
+			_computeSrc(src, wasVisible, displayed, token) {
 				// Use the existing data if we already have some.
 				// Note that when there was an error fetching the data because the token was missing,
 				// this would prevent a reload, so explicitly check for that.
@@ -115,7 +161,7 @@
 				// Return '', which iron-image treats as "nothing to do"
 				let result = '';
 
-				if (src) {
+				if (src && wasVisible) {
 					// Set base to support relative URLs
 					const srcUrl = new URL(src, window.location);
 					if (srcUrl.protocol === 'data:') {

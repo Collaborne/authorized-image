@@ -10,6 +10,7 @@
 
 		<link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
 		<link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+		<link rel="import" href="../../paper-checkbox/paper-checkbox.html">
 		<link rel="import" href="../../paper-input/paper-input.html">
 		<link rel="import" href="../authorized-image.html">
 
@@ -23,18 +24,50 @@
 	</head>
 	<body>
 		<div class="vertical-section-container centered">
-			<h3>Basic authorized-image demo</h3>
+			<h3>Basic authorized-image</h3>
 			<demo-snippet>
 				<template>
-					<dom-bind>
+					<dom-bind id="basic">
 						<template>
-							<authorized-image width="100" height="100" src="{{src}}" token="{{token}}" error="{{error}}"></authorized-image>
 							<paper-input label="Enter src URL" value="{{src}}"></paper-input>
 							<paper-input label="Enter bearer token" value="{{token}}"></paper-input>
+							<authorized-image width="100" height="100" src="{{src}}" token="{{token}}"></authorized-image>
+						</template>
+					</dom-bind>
+				</template>
+			</demo-snippet>
+
+			<h3>Hidden authorized-image</h3>
+			<demo-snippet>
+				<template>
+					<dom-bind id="hidden-image">
+						<template>
+							<paper-input label="Enter src URL" value="{{src}}"></paper-input>
+							<paper-input label="Enter bearer token" value="{{token}}"></paper-input>
+							<paper-checkbox checked="{{hiddenDiv}}">Hide image parent</paper-checkbox>
+							<paper-checkbox checked="{{hiddenImage}}">Hide image</paper-checkbox>
+
+							<div hidden$="[[hiddenDiv]]">
+								<authorized-image hidden$="[[hiddenImage]]" width="100" height="100" src="{{src}}" token="{{token}}"></authorized-image>
+							</div>
+
 						</template>
 					</dom-bind>
 				</template>
 			</demo-snippet>
 		</div>
+
+		<!-- Configure default values for the demos -->
+		<script>
+			const defaultSrc = 'sample.png'
+
+			const hiddenImage = window.document.querySelector('#hidden-image');
+			hiddenImage.hiddenDiv = true;
+			hiddenImage.hiddenImage = true;
+			hiddenImage.src = defaultSrc;
+
+			const basic = window.document.querySelector('#basic');
+			basic.src = defaultSrc;
+		</script>
 	</body>
 </html>
