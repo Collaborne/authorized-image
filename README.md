@@ -1,4 +1,4 @@
-# <authorized-image>
+# `<authorized-image>`
 
 A component that allows to show images that require authorization using a bearer token.
 
