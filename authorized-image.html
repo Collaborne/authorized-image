@@ -25,7 +25,7 @@
 
 			alt="{{alt}}"
 			crossorigin="{{crossorigin}}"
-			error="{{error}}"
+			error="{{_ironImageError}}"
 			fade="{{fade}}"
 			height="{{height}}"
 			loaded="{{loaded}}"
@@ -58,12 +58,15 @@
 			static get properties() {
 				return {
 					_displayed: Object,
+					_ironImageError: Boolean,
 
 					alt: String,
 					crossorigin: String,
 					error: {
+						computed: '_computeError(_ironImageError, _displayed)',
 						notify: true,
 						readOnly: true,
+						reflectToAttribute: true,
 						type: Boolean,
 					},
 					fade: Boolean,
@@ -88,6 +91,10 @@
 
 					token: String,
 				};
+			}
+
+			_computeError(ironImageError, displayed) {
+				return Boolean(ironImageError || displayed && displayed.dataUrl === '');
 			}
 
 			_computeSrc(src, displayed, token) {
