@@ -11,9 +11,10 @@
 		 *
 		 * @param {string} src the source URL to fetch
 		 * @param {string} [token] the token to use as bearer token
+		 * @param {string} [mode='same-origin'] the request "mode" to use ('cors', 'no-cors', 'same-origin')
 		 * @return {Promise<{dataUrl: string, src: string}>} a promise that resolves to an object providing the data: URL
 		 */
-		fetchDataUrl(src, token) {
+		fetchDataUrl(src, token, mode) {
 			if (!src) {
 				return Promise.reject(new Error('No src to fetch given'));
 			}
@@ -21,8 +22,13 @@
 			if (token) {
 				headers.set('authorization', `Bearer ${token}`);
 			}
-			return fetch(src, {headers})
-				.then(response => response.blob())
+			return fetch(src, {headers, mode})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error(`Cannot fetch: ${response.status} ${response.statusText}`);
+					}
+					return response.blob();
+				})
 				.then(blob => {
 					return new Promise(resolve => {
 						const fileReader = new FileReader();
