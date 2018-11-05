@@ -8,6 +8,11 @@ A component that allows to show images that require authorization using a bearer
 bower install --save Collaborne/authorized-image
 ```
 
+_Note:_ The component depends on a working `URL` constructor. For supporting IE11 and older browser you need to also install a polyfill as, such as [webcomponents/URL](https://github.com/webcomponents/URL):
+```sh
+bower install --save webcomponents/URL
+```
+
 ## License
 
     This software is licensed under the Apache 2 license, quoted below.
