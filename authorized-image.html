@@ -30,12 +30,12 @@
 			height="{{height}}"
 			loaded="{{loaded}}"
 			loading="{{loading}}"
-			placeholder="{{_computePlaceholder(src, placeholder)}}"
+			placeholder="[[_computePlaceholder(src, placeholder)]]"
 			position="{{position}}"
 			preload="{{preload}}"
-			prevent-load="{{_computePreventLoad(preventLoad, _displayed)}}"
+			prevent-load="[[_computePreventLoad(preventLoad, _displayed)]]"
 			sizing="{{sizing}}"
-			src="{{_computeSrc(src, _displayed, token)}}"
+			src="[[_computeSrc(src, _displayed, token)]]"
 			width="{{width}}"
 		></iron-image>
 	</template>
