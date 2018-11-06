@@ -168,6 +168,15 @@
 						// Data URL, we can use that directly.
 						this._displayed = this.displayed(src, src);
 						result = src;
+					} else if (!token) {
+						// No token, so no need to go through fetch.
+						// This means however that `img-src` in the CSP must be set for these.
+						// XXX: It is possible that this observer is called before the `token` property is initialized though,
+						//      in which case setting the result here will lead to problems if the image hasn't been fetched before.
+						//      These problems will get cured as soon as the token property gets set though.
+						//      If we're "lucky" and the browser has the image cached already we save one async cycle.
+						this._displayed = this.displayed(src, src);
+						result = src;
 					} else {
 						// Starting fetching content
 						this.fetchDataUrl(src, token).then(result => this._displayed = result);
