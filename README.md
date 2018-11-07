@@ -19,7 +19,7 @@ This component can solve problems related to caching images that require authori
 
 * The `<authorized-image>` component will fetch the images when then `src` is known and the component is likely visible based on an [IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API).
 * The `<authorized-image>` component will fetch images once per component instance, even when the URL is equal to other instances on the same page.
-* When using a token the `<authorized-image>` component will do a CORS pre-flight request due to the `authorization` HTTP header in the request.
+* When using a token the `<authorized-image>` component will do a CORS pre-flight request due to the `authorization` HTTP header in the request. Using a reasonable [`Access-Control-Max-Age`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Max-Age) value on the server side helps in reducing the impact by that.
 * Images fetched via the `<authorized-image>` component must comply to the `connect-src` Content-Security-Policy directive rather than the `img-src` directive.
 
 ## License
