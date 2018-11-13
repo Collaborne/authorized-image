@@ -182,7 +182,7 @@
 						this.fetchDataUrl(src, token).then(result => {
 							// Only assign to _displayed when something has changed.
 							if (!this._displayed || this._displayed.dataUrl !== result.dataUrl || this._displayed.src !== src) {
-								this._displayed = result
+								this._displayed = result;
 							}
 						});
 					}
