@@ -67,6 +67,12 @@
 					_wasVisible: {
 						computed: '_computeWasVisible(_wasVisible, _supportsIntersectionObserver, _visible)'
 					},
+					/**
+					 * Whether this image was visible according to the intersection observer.
+					 *
+					 * This value is only valid when the component is "ready" and _supportsIntersectionObserver is true.
+					 */
+					_visible: Boolean,
 					_supportsIntersectionObserver: {
 						value: typeof IntersectionObserver === 'function',
 						readOnly: true,
