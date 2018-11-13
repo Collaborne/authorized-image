@@ -154,17 +154,13 @@
 			}
 
 			_computeSrc(src, wasVisible, displayed, token) {
-				// Use the existing data if we already have some.
-				// Note that when there was an error fetching the data because the token was missing,
-				// this would prevent a reload, so explicitly check for that.
-				if (displayed) {
-					const forceReload = displayed.dataUrl === '' && token;
-					if (!forceReload && src === displayed.src) {
-						return displayed.dataUrl;
-					}
+				// Use the dataUrl when known and the src/token parameters are matching.
+				// Otherwise we need to try to fetch again to synchronize.
+				if (displayed && displayed.src === src && displayed.token === token) {
+					return displayed.dataUrl;
 				}
 
-				// Return '', which iron-image treats as "nothing to do"
+				// Start with a return value of '', which iron-image treats as "nothing to do"
 				let result = '';
 
 				if (src && wasVisible) {
@@ -172,7 +168,7 @@
 					const srcUrl = new URL(src, window.location);
 					if (srcUrl.protocol === 'data:') {
 						// Data URL, we can use that directly.
-						this._displayed = this.displayed(src, src);
+						this._displayed = this._fetched(src, src, token);
 						result = src;
 					} else if (!token) {
 						// No token, so no need to go through fetch.
@@ -181,14 +177,15 @@
 						//      in which case setting the result here will lead to problems if the image hasn't been fetched before.
 						//      These problems will get cured as soon as the token property gets set though.
 						//      If we're "lucky" and the browser has the image cached already we save one async cycle.
-						this._displayed = this.displayed(src, src);
+						this._displayed = this._fetched(src, src, token);
 						result = src;
 					} else {
 						// Starting fetching content
-						this.fetchDataUrl(src, token).then(result => {
-							// Only assign to _displayed when something has changed.
-							if (!this._displayed || this._displayed.dataUrl !== result.dataUrl || this._displayed.src !== src) {
-								this._displayed = result;
+						this.fetchDataUrl(src, token).then(fetched => {
+							// Update the _displayed property with the result of fetching, as long as the value is still "current"
+							// and the change would not be a noop (dataUrl, src, or token must have actually changed)
+							if (!this._displayed || this._isChanged(this._displayed, fetched)) {
+								this._displayed = fetched;
 							}
 						});
 					}
@@ -207,6 +204,10 @@
 				if (!src) {
 					return placeholder;
 				}
+			}
+
+			_isChanged(displayed, fetched) {
+				return displayed.src !== fetched.src || displayed.token !== fetched.token || displayed.dataUrl !== fetched.dataUrl;
 			}
 		}
 		window.customElements.define(AuthorizedImage.is, AuthorizedImage);
