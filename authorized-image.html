@@ -154,9 +154,9 @@
 			}
 
 			_computeSrc(src, wasVisible, displayed, token) {
-				// Use the dataUrl when known and the src/token parameters are matching.
-				// Otherwise we need to try to fetch again to synchronize.
-				if (displayed && displayed.src === src && displayed.token === token) {
+				// Use the dataUrl if the src was fetched already earlier
+				// In case the image wasn't loaded and the token changed, we try to fetch again to see if the image loads now.
+				if (displayed && displayed.src === src && (displayed.dataUrl || displayed.token === token)) {
 					return displayed.dataUrl;
 				}
 
