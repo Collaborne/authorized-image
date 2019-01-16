@@ -2,7 +2,7 @@
   "description": "A component that allows to show images that require authorization using a bearer token.",
   "homepage": "https://github.com/collaborne/authorized-image",
   "name": "@collaborne/authorized-image",
-  "version": "v1.2.1",
+  "version": "2.0.0",
   "resolutions": {
     "inherits": "2.0.3",
     "samsam": "1.1.3",
