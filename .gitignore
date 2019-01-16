@@ -1,5 +1,6 @@
-/bower_components/
+/node_modules/
 
 *.rej
 *.orig
 *.porig
+node_modules

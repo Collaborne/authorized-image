@@ -5,12 +5,12 @@ A component that allows to show images that require authorization using a bearer
 ## Usage
 
 ```sh
-bower install --save Collaborne/authorized-image
+npm install Collaborne/authorized-image --save
 ```
 
 _Note:_ The component depends on a working `URL` constructor. For supporting IE11 and older browser you need to also install a polyfill as, such as [webcomponents/URL](https://github.com/webcomponents/URL):
 ```sh
-bower install --save webcomponents/URL
+npm install @webcomponents/url --save
 ```
 
 ## Restrictions, Known Issues, and Differences to `<img>`/`<iron-image>`

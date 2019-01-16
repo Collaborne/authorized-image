@@ -6,22 +6,16 @@
 
 		<title>authorized-image demo</title>
 
-		<script src="../../webcomponentsjs/webcomponents-loader.js"></script>
-
-		<link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-		<link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-		<link rel="import" href="../../paper-checkbox/paper-checkbox.html">
-		<link rel="import" href="../../paper-input/paper-input.html">
-		<link rel="import" href="../authorized-image.html">
-
-		<custom-style>
-			<style is="custom-style" include="demo-pages-shared-styles">
-				authorized-image[error] {
-					border: 5px solid red;
-				}
-			</style>
-		</custom-style>
+		<script type="module">
+			import '@webcomponents/webcomponentsjs/webcomponents-loader.js';
+			import '@polymer/iron-demo-helpers/demo-pages-shared-styles.js';
+			import '@polymer/iron-demo-helpers/demo-snippet.js';
+			import '@polymer/paper-checkbox/paper-checkbox.js';
+			import '@polymer/paper-input/paper-input.js';
+			import '../authorized-image.js';
+		</script>
 	</head>
+
 	<body>
 		<div class="vertical-section-container centered">
 			<h3>Basic authorized-image</h3>
@@ -29,10 +23,27 @@
 				<template>
 					<dom-bind id="basic">
 						<template>
+							<style is="custom-style" include="demo-pages-shared-styles">
+								authorized-image[error] {
+									border: 5px solid red;
+								}
+							</style>
+
 							<paper-input label="Enter src URL" value="{{src}}"></paper-input>
 							<paper-input label="Enter bearer token" value="{{token}}"></paper-input>
-							<authorized-image width="100" height="100" src="{{src}}" token="{{token}}"></authorized-image>
+							<authorized-image
+								width="100"
+								height="100"
+								src="{{src}}"
+								token="{{token}}"
+							></authorized-image>
 						</template>
+
+						<!-- Configure default values for the demos -->
+						<script>
+							const basicScope = document.querySelector('#basic');
+							basicScope.src = 'sample.png';
+						</script>
 					</dom-bind>
 				</template>
 			</demo-snippet>
@@ -47,27 +58,27 @@
 							<paper-checkbox checked="{{hiddenDiv}}">Hide image parent</paper-checkbox>
 							<paper-checkbox checked="{{hiddenImage}}">Hide image</paper-checkbox>
 
-							<div hidden$="[[hiddenDiv]]">
-								<authorized-image hidden$="[[hiddenImage]]" width="100" height="100" src="{{src}}" token="{{token}}"></authorized-image>
+							<div hidden="[[hiddenDiv]]">
+								<authorized-image
+									hidden="[[hiddenImage]]"
+									width="100"
+									height="100"
+									src="{{src}}"
+									token="{{token}}"
+								></authorized-image>
 							</div>
 
+							<!-- Configure default values for the demos -->
+							<script>
+								const hiddenScope = document.querySelector('#hidden-image');
+								hiddenScope.hiddenDiv = true;
+								hiddenScope.hiddenImage = true;
+								hiddenScope.src = 'sample.png';
+							</script>
 						</template>
 					</dom-bind>
 				</template>
 			</demo-snippet>
 		</div>
-
-		<!-- Configure default values for the demos -->
-		<script>
-			const defaultSrc = 'sample.png'
-
-			const hiddenImage = window.document.querySelector('#hidden-image');
-			hiddenImage.hiddenDiv = true;
-			hiddenImage.hiddenImage = true;
-			hiddenImage.src = defaultSrc;
-
-			const basic = window.document.querySelector('#basic');
-			basic.src = defaultSrc;
-		</script>
 	</body>
 </html>
