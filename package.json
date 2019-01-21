@@ -1,6 +1,6 @@
 {
   "name": "@collaborne/authorized-image",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A component that allows to show images that require authorization using a bearer token.",
   "author": "Collaborne B.V.",
   "homepage": "https://github.com/Collaborne/authorized-image",
