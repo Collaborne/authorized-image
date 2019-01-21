@@ -13,14 +13,19 @@
     "url": "git+https://github.com/Collaborne/authorized-image.git"
   },
   "main": "authorized-image.js",
+  "scripts": {
+    "lint": "polymer lint",
+    "test": "npm run lint && echo 'No tests yet'"
+  },
   "dependencies": {
     "@polymer/polymer": "^3.0.0",
     "@polymer/iron-image": "^3.0.0"
   },
   "devDependencies": {
     "@polymer/iron-demo-helpers": "^3.0.0",
-    "@polymer/paper-input": "^3.0.0",
     "@polymer/paper-checkbox": "^3.0.0",
-    "@webcomponents/webcomponentsjs": "^2.0.0"
+    "@polymer/paper-input": "^3.0.0",
+    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "polymer-cli": "^1.9.5"
   }
 }
