@@ -1,11 +1,18 @@
 {
-  "description": "A component that allows to show images that require authorization using a bearer token.",
-  "homepage": "https://github.com/collaborne/authorized-image",
   "name": "@collaborne/authorized-image",
   "version": "2.0.0",
-  "main": "authorized-image.js",
-  "author": "collaborne",
+  "description": "A component that allows to show images that require authorization using a bearer token.",
+  "author": "Collaborne B.V.",
+  "homepage": "https://github.com/Collaborne/authorized-image",
   "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Collaborne/authorized-image/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Collaborne/authorized-image.git"
+  },
+  "main": "authorized-image.js",
   "dependencies": {
     "@polymer/polymer": "^3.0.0",
     "@polymer/iron-image": "^3.0.0"
