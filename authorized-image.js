@@ -1,7 +1,7 @@
-import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-image/iron-image.js';
+import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
 
-import { AuthorizedFetchMixin } from './authorized-fetch-mixin.js';
+import {AuthorizedFetchMixin} from './authorized-fetch-mixin.js';
 
 /**
  * Image that uses the file-token to authenticate requests to images
@@ -54,6 +54,20 @@ class AuthorizedImage extends AuthorizedFetchMixin(PolymerElement) {
 		return {
 			_displayed: Object,
 			_ironImageError: Boolean,
+
+			_supportsIntersectionObserver: {
+				readOnly: true,
+				type: Boolean,
+				value: typeof IntersectionObserver === 'function',
+			},
+
+			/**
+			 * Whether this image was visible according to the intersection observer.
+			 *
+			 * This value is only valid when the component is "ready" and _supportsIntersectionObserver is true.
+			 */
+			_visible: Boolean,
+
 			/**
 			 * Whether this image was ever visible.
 			 * This property is used to delay the internal "fetch" request for invisible images, but avoid
@@ -61,17 +75,6 @@ class AuthorizedImage extends AuthorizedFetchMixin(PolymerElement) {
 			 */
 			_wasVisible: {
 				computed: '_computeWasVisible(_wasVisible, _supportsIntersectionObserver, _visible)'
-			},
-			/**
-			 * Whether this image was visible according to the intersection observer.
-			 *
-			 * This value is only valid when the component is "ready" and _supportsIntersectionObserver is true.
-			 */
-			_visible: Boolean,
-			_supportsIntersectionObserver: {
-				value: typeof IntersectionObserver === 'function',
-				readOnly: true,
-				type: Boolean,
 			},
 
 			alt: String,
@@ -103,10 +106,10 @@ class AuthorizedImage extends AuthorizedFetchMixin(PolymerElement) {
 			src: String,
 			width: Number,
 
-			token: String,
-			mode: {
-				value: 'cors',
+			token: String, // eslint-disable-line sort-keys
+			mode: { // eslint-disable-line sort-keys
 				type: String,
+				value: 'cors',
 			},
 		};
 	}
@@ -119,10 +122,10 @@ class AuthorizedImage extends AuthorizedFetchMixin(PolymerElement) {
 		// If the browser doesn't support this functionality we rely on the default value.
 		// Observe mutations to the parent element that affect us
 		if (this._supportsIntersectionObserver) {
-			this._observer = new IntersectionObserver(entries => {
+			this._observer = new IntersectionObserver(entries => { // eslint-disable-line no-unused-vars
 				// See https://stackoverflow.com/a/38873788/196315
 				// XXX: Can we instead look at the entries, specifically 'isIntersecting'?
-				this._visible = !!(this.offsetHeight || this.offsetWidth || this.getClientRects().length > 0);
+				this._visible = Boolean(this.offsetHeight || this.offsetWidth || this.getClientRects().length > 0);
 			});
 			this._observer.observe(this);
 		}
@@ -145,7 +148,7 @@ class AuthorizedImage extends AuthorizedFetchMixin(PolymerElement) {
 	}
 
 	_computeError(ironImageError, displayed) {
-		return Boolean(ironImageError || displayed && displayed.dataUrl === '');
+		return Boolean(ironImageError) || Boolean(displayed && displayed.dataUrl === '');
 	}
 
 	_computeSrc(src, wasVisible, displayed, token) {
@@ -191,7 +194,11 @@ class AuthorizedImage extends AuthorizedFetchMixin(PolymerElement) {
 
 	_computePreventLoad(preventLoad, displayed) {
 		// Prevent loading when either the user requested that, or when we cannot actually display things.
-		return preventLoad || (displayed && displayed.dataUrl === '');
+		if (preventLoad) {
+			return true;
+		}
+
+		return Boolean(displayed && displayed.dataUrl === '');
 	}
 
 	_computePlaceholder(src, placeholder) {
@@ -199,6 +206,8 @@ class AuthorizedImage extends AuthorizedFetchMixin(PolymerElement) {
 		if (!src) {
 			return placeholder;
 		}
+
+		return undefined;
 	}
 
 	_isChanged(displayed, fetched) {

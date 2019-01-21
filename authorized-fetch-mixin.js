@@ -1,7 +1,13 @@
+/* eslint-disable valid-jsdoc */
 /**
  * Mixin that allows fetching with authorization through the browser cache and providing the result through a data: URL.
+ *
+ * @template T type of parent class
+ * @param {T} parent parent class
+ * @returns {T & AuthorizedFetchMixin} parent with this mixed in
  */
-export const AuthorizedFetchMixin = parent => class extends parent {
+/* eslint-enable valid-jsdoc */
+export const AuthorizedFetchMixin = parent => class extends parent { // eslint-disable-line padded-blocks
 	/**
 	 * Fetch the given `src` by authorizing with the given bearer token `token`.
 	 *
